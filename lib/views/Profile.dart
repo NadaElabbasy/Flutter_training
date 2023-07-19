@@ -13,7 +13,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrangeAccent,
+        backgroundColor: Color.fromARGB(255, 252, 238, 50),
         title: Text("Profile"),
         centerTitle: true,
       ),

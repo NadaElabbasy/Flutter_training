@@ -126,9 +126,9 @@ class _HomePageState extends State<HomePage> {
  Future<bool> signinUsingFirebase(String email, String password) async {
   bool result = false;
   try{
-    UserCredential userCredential =
+    UserCredential Credential =
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    final user = userCredential.user;
+    final user = Credential.user;
     if (user!= null){
     print(user?.uid);
     saveEmail(user!.email!);
