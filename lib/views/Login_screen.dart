@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_navigation/views/Profile.dart';
 import 'package:flutter_navigation/views/NextPage.dart';
+import 'package:flutter_navigation/views/TodoList.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage("assets/dart.jpg"), fit: BoxFit.fill)),
+                      image: AssetImage("assets/shoe.jpg"), fit: BoxFit.fill)),
               child: Column(
                 children: [],
               ),
@@ -87,16 +88,19 @@ class _HomePageState extends State<HomePage> {
                             foregroundColor:
                                 MaterialStatePropertyAll<Color>(Colors.white),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                             signinUsingFirebase(emailController.text, passwordController.text);
+                            bool loginresult = await signinUsingFirebase(emailController.text, passwordController.text);
+                            if(loginresult == true){
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>NextPage(
-                                          email: emailController.text,
-                                        )),
+                                    builder: (context) =>TodoList( )),
                               );
+                            }
+                            else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('Invalid Login')));
+                            }
                             }
                             else {
                     emailController.clear();
@@ -119,11 +123,21 @@ class _HomePageState extends State<HomePage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", email);
   }
-  signinUsingFirebase(String email, String password) async {
+ Future<bool> signinUsingFirebase(String email, String password) async {
+  bool result = false;
+  try{
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
     final user = userCredential.user;
+    if (user!= null){
     print(user?.uid);
     saveEmail(user!.email!);
+    result = true;
+    }
+    return result;
   }
+  catch(e){
+    return result;
+  }
+}
 }
